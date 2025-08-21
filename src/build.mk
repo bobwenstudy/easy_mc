@@ -1,0 +1,3 @@
+SRC		+= $(EASY_FOC_PATH)
+
+INCLUDE	+= $(EASY_FOC_PATH)

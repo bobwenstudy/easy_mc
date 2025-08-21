@@ -1,0 +1,47 @@
+# define source directory
+SRC		+= $(CUST_PORT_PATH)
+SRC		+= $(CUST_PORT_PATH)/Core/Src
+SRC		+= $(CUST_PORT_PATH)/Core/Startup
+SRC		+= $(CUST_PORT_PATH)/Porting
+
+# define include directory
+INCLUDE	+= $(CUST_PORT_PATH)
+INCLUDE	+= $(CUST_PORT_PATH)/Core/Inc
+INCLUDE	+= $(CUST_PORT_PATH)/Porting
+
+# define lib directory
+LIB		+=
+
+
+
+
+
+
+GCC_DIR = $(CUST_PORT_PATH)/GCC
+
+ROOT_DIR = $(CUST_PORT_PATH)
+
+LIB_DIR = $(ROOT_DIR)/Drivers
+
+CMSIS_DIR = $(LIB_DIR)/CMSIS
+CMSIS_DEVICE_DIR = $(CMSIS_DIR)/Device/ST/STM32G4xx
+BSP_DIR = $(LIB_DIR)/BSP
+DRIVER_DIR = $(LIB_DIR)/STM32G4xx_HAL_Driver
+
+
+MIDDLEWARE_DIR = $(ROOT_DIR)/Middlewares
+DSP_DIR = $(MIDDLEWARE_DIR)/ST/ARM/DSP
+
+
+
+# select CPU
+COMMON_FLAGS  += -DARM_MATH_CM4
+COMMON_FLAGS  += -DUSE_HAL_DRIVER
+COMMON_FLAGS  += -DSTM32G431xx
+
+CPU_ARCH := cortex-m4
+JLINK_DEVICE  := STM32G431CB
+
+LINKER_SCRIPT ?= $(CUST_PORT_PATH)/STM32G431CBUX_FLASH.ld
+
+include $(CUST_PORT_PATH)/GCC/Makefile.base

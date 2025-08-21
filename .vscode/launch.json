@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "cortex-debug",
+            "request": "launch",
+            //"request": "attach",
+            "name": "Debug",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/output/main.elf",
+            "serverpath": "${config:cortex-debug.JLinkGDBServerPath}",
+            "servertype": "jlink",
+            // "device": "STM32G474RE",
+            "device": "STM32G431CB",
+            "interface": "swd",
+            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+            "runToMain": true,
+            "preLaunchTask": "build"
+        }
+    ]
+}
