@@ -23,24 +23,28 @@ static int is_hw_init = 0;
 
 static int adc_ibus_offset = -1;
 
-static uint16_t adc1_data[2];
+static uint16_t adc1_data[1];
+static uint16_t adc2_data[1];
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
     // EASY_MC_LOG_DBG("HAL_ADC_ConvCpltCallback\n");
     if (hadc->Instance == ADC1)
     {
         float vbus = (float)adc1_data[0] / 4096 * 3.3f * (2.7f + 47.0f) / 2.7f;
+        easy_mc_set_v_bus(vbus);
+    }
+    else if (hadc->Instance == ADC2)
+    {
         float ibus = 0;
         if (adc_ibus_offset < 0)
         {
-            adc_ibus_offset = adc1_data[1];
+            adc_ibus_offset = adc2_data[0];
         }
         else
         {
-            ibus = (adc_ibus_offset - adc1_data[1]) * EASY_MC_CONFIG_ADC_CONV_VALUE_IBUS;
+            ibus = (adc2_data[0] - adc_ibus_offset) * EASY_MC_CONFIG_ADC_CONV_VALUE_IBUS;
         }
 
-        easy_mc_set_v_bus(vbus);
         easy_mc_set_i_bus(ibus);
     }
 }
@@ -54,6 +58,7 @@ void easy_mc_hw_1ms_task(void)
     }
 
     HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc1_data, sizeof(adc1_data) / sizeof(uint16_t));
+    HAL_ADC_Start_DMA(&hadc2, (uint32_t *)adc2_data, sizeof(adc2_data) / sizeof(uint16_t));
 }
 
 void easy_mc_hw_debug_io_control(int io_index, int is_set)
