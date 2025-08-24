@@ -263,16 +263,18 @@ typedef enum
 ```mermaid
 graph TD
 A((INIT))
-B((ELECTRIC_ZERO_INIT))
-C((MECHANICAL_ZERO_INIT))
-D((ENABLE))
-E((DISABLE))
+B((ADC_INIT))
+C((ELECTRIC_ZERO_INIT))
+D((MECHANICAL_ZERO_INIT))
+E((ENABLE))
+F((DISABLE))
 A-->B
 B-->C
 C-->D
-D-->|easy_mc_user_motor_control true|E
-E-->|easy_mc_user_motor_control false|D
-B-->|EASY_MC_CONFIG_MECHANICAL_ALIGN_ENABLE==0|D
+D-->E
+E-->|easy_mc_user_motor_control false|F
+F-->|easy_mc_user_motor_control true|E
+C-->|EASY_MC_CONFIG_MECHANICAL_ALIGN_ENABLE==0|E
 ```
 
 
@@ -330,7 +332,7 @@ subgraph C[FOC控制]
         end
     subgraph CB[IQ]
         cb1[Clark变化]
-        cb2[Park逆变化]
+        cb2[Park变化]
         cb3[Id/Iq经PID输出Ud/Uq]
         end
     subgraph CC[SPEED]
@@ -342,7 +344,7 @@ subgraph C[FOC控制]
         cd2[Iq=位置差的PID输出]
         end
     subgraph CE[IQ_WITH_POSITION_LIMIT]
-        ce1[Positon移除时，调整Iq=0]
+        ce1[Positon溢出时，调整Iq=0]
         end
     end
 
