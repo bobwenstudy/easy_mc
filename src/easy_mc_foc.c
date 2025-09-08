@@ -202,6 +202,19 @@ static easy_mc_pid_t position_pid = {
         .d_out = 0.0f,
 };
 
+static easy_mc_pid_t position_speed_limit_pid = {
+        .Kp = EASY_MC_CONFIG_PID_POSITION_SPEED_LIMIT_KP,
+        .Ki = EASY_MC_CONFIG_PID_POSITION_SPEED_LIMIT_KI * EASY_MC_SAMPLE_TIME,
+        .Kd = 0.0f / EASY_MC_SAMPLE_TIME,
+        .integral = 0.0f,
+        .prev_error = 0.0f,
+        .integral_max = 100,
+        .output_max = 100,
+        .p_out = 0.0f,
+        .i_out = 0.0f,
+        .d_out = 0.0f,
+};
+
 easy_mc_pid_t *easy_mc_foc_get_pid_controller(easy_mc_pid_type_t type)
 {
     switch (type)
@@ -214,6 +227,8 @@ easy_mc_pid_t *easy_mc_foc_get_pid_controller(easy_mc_pid_type_t type)
         return &speed_pid;
     case MOTOR_PID_TYPE_POSITION:
         return &position_pid;
+    case MOTOR_PID_TYPE_POSITION_SPEED_LIMIT:
+        return &position_speed_limit_pid;
     default:
         return NULL;
     }
@@ -260,6 +275,14 @@ static void easy_mc_foc_position_loop_step(float angle_el)
 {
     motor_control.id_ref = 0;
     motor_control.iq_ref = easy_mc_pid_process(abz_encoder_handle.position, motor_control.position_ref, &position_pid);
+    easy_mc_foc_iqd_loop_step(angle_el);
+}
+
+static void easy_mc_foc_position_with_speed_limit_loop_step(float angle_el)
+{
+    float speed_ref = easy_mc_pid_process(abz_encoder_handle.position, motor_control.position_ref, &position_speed_limit_pid);
+    motor_control.id_ref = 0;
+    motor_control.iq_ref = easy_mc_pid_process(abz_encoder_handle.speed, speed_ref, &speed_pid);
     easy_mc_foc_iqd_loop_step(angle_el);
 }
 
@@ -323,6 +346,9 @@ void easy_mc_foc_step(void)
         break;
     case MOTOR_CONTROL_MODE_IQ_WITH_POSITION_LIMIT:
         easy_mc_foc_iqd_with_position_limit_loop_step(angle_el);
+        break;
+    case MOTOR_CONTROL_MODE_POSITION_SPEED_LIMIT:
+        easy_mc_foc_position_with_speed_limit_loop_step(angle_el);
         break;
     default:
         return;

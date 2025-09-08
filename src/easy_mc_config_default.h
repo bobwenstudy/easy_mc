@@ -196,6 +196,22 @@ extern "C" {
 #endif
 
 /**
+ * PID parameters
+ * Position speed limit controller, Kp
+ */
+#ifndef EASY_MC_CONFIG_PID_POSITION_SPEED_LIMIT_KP
+#define EASY_MC_CONFIG_PID_POSITION_SPEED_LIMIT_KP 50.0f
+#endif
+
+/**
+ * PID parameters
+ * Position speed limit controller, Ki
+ */
+#ifndef EASY_MC_CONFIG_PID_POSITION_SPEED_LIMIT_KI
+#define EASY_MC_CONFIG_PID_POSITION_SPEED_LIMIT_KI 50.0f
+#endif
+
+/**
  * Motor Current Filter parameters
  * Motor Current Filter end frequence, unit: Hz.
  */

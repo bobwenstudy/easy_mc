@@ -34,6 +34,15 @@ void easy_mc_user_set_position_angle_ref(float position_angle_ref);        // Se
 void easy_mc_user_set_position_offset_ref(float position_ref);             // Set the position offset reference for the position loop
 void easy_mc_user_set_position_angle_offset_ref(float position_angle_ref); // Set the position angle offset reference for the position loop
 
+// Position loop control with speed limit
+void easy_mc_user_set_position_ref_limit_speed(float position_ref, float speed_limit); // Set the reference position and speed limit for the position loop
+void easy_mc_user_set_position_angle_ref_limit_speed(float position_angle_ref,
+                                                     float speed_limit); // Set the reference position angle and speed limit for the position loop
+void easy_mc_user_set_position_offset_ref_limit_speed(float position_ref,
+                                                      float speed_limit); // Set the position offset reference and speed limit for the position loop
+void easy_mc_user_set_position_angle_offset_ref_limit_speed(float position_angle_ref,
+                                                            float speed_limit); // Set the position angle offset reference and speed limit for the position loop
+
 // Current loop control
 void easy_mc_user_set_i_ref(float iq_ref, float id_ref); // Set the reference values for iq and id in current loop control
 

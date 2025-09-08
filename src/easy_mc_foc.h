@@ -14,6 +14,7 @@ typedef enum
     MOTOR_PID_TYPE_ID = 1,
     MOTOR_PID_TYPE_SPEED = 2,
     MOTOR_PID_TYPE_POSITION = 3,
+    MOTOR_PID_TYPE_POSITION_SPEED_LIMIT = 4,
 } easy_mc_pid_type_t;
 
 easy_mc_pid_t *easy_mc_foc_get_pid_controller(easy_mc_pid_type_t type);

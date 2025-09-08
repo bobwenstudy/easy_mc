@@ -81,6 +81,30 @@ void easy_mc_user_set_position_angle_offset_ref(float position_angle_ref)
     easy_mc_user_set_position_ref((position_angle_ref) * (EASY_MC_MATH_2PI / 360.0f) + abz_encoder_handle.position);
 }
 
+void easy_mc_user_set_position_ref_limit_speed(float position_ref, float speed_limit)
+{
+    motor_control_user_command.params_control_is_set = 0;
+    motor_control_user_command.params_speed_ref = speed_limit;
+    motor_control_user_command.params_position_ref = position_ref;
+    motor_control_user_command.params_control_mode = MOTOR_CONTROL_MODE_POSITION_SPEED_LIMIT;
+    motor_control_user_command.params_control_is_set = 1;
+}
+
+void easy_mc_user_set_position_angle_ref_limit_speed(float position_angle_ref, float speed_limit)
+{
+    easy_mc_user_set_position_ref_limit_speed((position_angle_ref) * (EASY_MC_MATH_2PI / 360.0f), speed_limit);
+}
+
+void easy_mc_user_set_position_offset_ref_limit_speed(float position_ref, float speed_limit)
+{
+    easy_mc_user_set_position_ref_limit_speed(position_ref + abz_encoder_handle.position, speed_limit);
+}
+
+void easy_mc_user_set_position_angle_offset_ref_limit_speed(float position_angle_ref, float speed_limit)
+{
+    easy_mc_user_set_position_ref_limit_speed((position_angle_ref) * (EASY_MC_MATH_2PI / 360.0f) + abz_encoder_handle.position, speed_limit);
+}
+
 void easy_mc_user_set_theta_inc(float arc_inc)
 {
     motor_control_user_command.params_theta_is_set = 0;
@@ -138,6 +162,15 @@ static void easy_mc_handle_user_control_command(void)
         motor_control.id_ref = motor_control_user_command.params_i_qd_ref.d;
         motor_control.position_limit = motor_control_user_command.params_position_limit;
         break;
+    case MOTOR_CONTROL_MODE_POSITION_SPEED_LIMIT:
+    {
+        easy_mc_pid_t *pid = easy_mc_foc_get_pid_controller(MOTOR_PID_TYPE_POSITION_SPEED_LIMIT);
+        pid->integral_max = motor_control_user_command.params_speed_ref;
+        pid->output_max = motor_control_user_command.params_speed_ref;
+        motor_control.position_ref = motor_control_user_command.params_position_ref;
+        motor_control.speed_ref = motor_control_user_command.params_speed_ref;
+    }
+    break;
 
     default:
         return;
