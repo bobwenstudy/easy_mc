@@ -432,10 +432,21 @@ void easy_mc_high_freq_task_loop(void)
                 motor_control.speed_ref = EASY_MC_CONFIG_ENCODER_ZERO_ALIGN_SPEED_RPM;
                 motor_control.control_mode = MOTOR_CONTROL_MODE_SPEED;
 #else
-                // switch next state
-                motor_control.state = MOTOR_STATE_ENABLE;
+                // reset positiom
+                abz_encoder_handle.position = 0;
 
                 abz_encoder_handle.zero_flag = 1;
+
+                // Update motor status
+                motor_control.state = MOTOR_STATE_ENABLE;
+
+                // easy_mc_user_set_theta_abz();
+                motor_control.theta_mode = MOTOR_THETA_MODE_ENCODER_ABZ;
+
+                // easy_mc_user_motor_control
+                motor_control.control_mode = MOTOR_CONTROL_MODE_IQ;
+                motor_control.iq_ref = 0;
+                motor_control.id_ref = 0;
 #endif
             }
         }
@@ -464,7 +475,7 @@ bool easy_mc_check_enable(void)
     return (motor_control.state == MOTOR_STATE_ENABLE) ? true : false;
 }
 
-int easy_mc_get_status(void)
+int easy_mc_get_state(void)
 {
     return motor_control.state;
 }
@@ -512,7 +523,7 @@ float easy_mc_get_position(void)
 
 float easy_mc_get_position_degree(void)
 {
-    return abz_encoder_handle.position / EASY_MC_MATH_PI * 180.0f;
+    return abz_encoder_handle.position * (180.0f / EASY_MC_MATH_PI);
 }
 
 void easy_mc_isr_task_low_frequency(void)

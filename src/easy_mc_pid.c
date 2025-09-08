@@ -22,11 +22,12 @@ void easy_mc_pid_history_init(easy_mc_pid_t *pid)
 void easy_mc_pid_init(easy_mc_pid_t *pid, float kp, float ki, float kd)
 {
     pid->Kp = kp;
-    pid->Ki = ki;
-    pid->Kd = kd;
+    pid->Ki = ki * EASY_MC_SAMPLE_TIME;
+    pid->Kd = kd / EASY_MC_SAMPLE_TIME;
 
     easy_mc_pid_history_init(pid);
 }
+
 float easy_mc_pid_process(float value_meas, float value_ref, easy_mc_pid_t *pid)
 {
     // 1. Calculate the error

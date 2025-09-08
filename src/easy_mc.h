@@ -32,7 +32,7 @@ void easy_mc_isr_set_zero(void);
 void easy_mc_adc_debug_data(void);
 bool easy_mc_adc_offset_init(void);
 bool easy_mc_check_enable(void);
-int easy_mc_get_status(void);
+int easy_mc_get_state(void);
 void easy_mc_control(bool status);
 void easy_mc_set_v_bus(float v_bus);
 void easy_mc_set_i_bus(float i_bus);
